@@ -6,7 +6,9 @@ from tkinter import filedialog
 import wikipedia
 from tkinter import ttk
 from groq import Groq
+import webbrowser
 
+from tkinter import ttk
 # Initialize Groq client with API key
 client = Groq(api_key="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")
 
@@ -106,6 +108,10 @@ def process_image():
         definitions_text_widget.config(state=tk.DISABLED)
 
 # Main ingredient inspector app setup
+def open_review():
+    webbrowser.open("http://localhost:8501")
+
+# Main ingredient inspector app setup
 def main_app():
     global result_label, definitions_text_widget
 
@@ -115,37 +121,41 @@ def main_app():
     window.configure(bg="#ECF0F1")
 
     header_frame = tk.Frame(window, bg="#3498DB")
-    header_frame.pack(fill="x")
+    header_frame.grid(row=0, column=0, sticky="ew")
 
     content_frame = tk.Frame(window, bg="#ECF0F1")
-    content_frame.pack(fill="both", expand=True, padx=50, pady=30)
+    content_frame.grid(row=1, column=0, sticky="nsew", padx=50, pady=30)
 
     title_label = tk.Label(header_frame, text="Ingredient Inspector", font=("Helvetica", 28, "bold"), bg="#3498DB", fg="white")
-    title_label.pack(pady=20, padx=20, anchor="nw")
+    title_label.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
 
     upload_label = tk.Label(content_frame, text="Please upload your image here:", font=("Helvetica", 14), bg="#ECF0F1", fg="#34495E")
-    upload_label.pack()
-
-    tk.Label(content_frame, text="", bg="#ECF0F1").pack(pady=10)
+    upload_label.grid(row=0, column=0, padx=20, pady=10)
 
     upload_button = ttk.Button(content_frame, text="Upload Image", command=process_image, style="TButton")
-    upload_button.pack()
-
-    tk.Label(content_frame, text="", bg="#ECF0F1").pack(pady=20)
+    upload_button.grid(row=1, column=0, pady=20)
 
     result_label = tk.Label(content_frame, text="", bg="#ECF0F1", justify="center")
-    result_label.pack(pady=20)
+    result_label.grid(row=2, column=0, pady=20)
 
     definitions_text_widget = tk.Text(content_frame, bg="#ECF0F1", fg="black", font=("Arial", 16, "bold"), wrap="word", height=10, width=80)
-    definitions_text_widget.pack(pady=20)
+    definitions_text_widget.grid(row=3, column=0, pady=20)
     definitions_text_widget.config(state=tk.DISABLED)
 
     scrollbar = tk.Scrollbar(content_frame, command=definitions_text_widget.yview)
-    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    scrollbar.grid(row=3, column=1, sticky="ns")
     definitions_text_widget.config(yscrollcommand=scrollbar.set)
+
+    # Add the "Review" button with proper padding and styling
+    review_button = ttk.Button(content_frame, text="Review", command=open_review, style="TButton")
+    review_button.grid(row=4, column=0, pady=30)  # Added padding for spacing
 
     style = ttk.Style()
     style.configure("TButton", padding=10, relief="flat", background="#2E86C1", foreground="black", font=("Helvetica", 16))
+
+    # Ensure the window grid expands properly
+    window.grid_rowconfigure(1, weight=1)
+    window.grid_columnconfigure(0, weight=1)
 
     window.mainloop()
 
